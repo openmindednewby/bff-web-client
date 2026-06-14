@@ -1,6 +1,6 @@
 {
   "name": "@dloizides/bff-web-client",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Product-agnostic RN-web BFF HTTP layer for the dloizides.com portfolio: an axios instance factory plus an interceptor chain (logging, success-toast normalizer, error classifier) with app-supplied ports for the CSRF strategy, session-expiry handling, toast emitter, and logger. Pairs with @dloizides/api-client-base by composition, never imports a product.",
   "keywords": [
     "axios",
