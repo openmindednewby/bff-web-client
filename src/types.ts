@@ -36,6 +36,47 @@ export type EmitToast = (message: string, severity: ErrorSeverity) => void;
 export type InterceptorRegistrar = (instance: AxiosInstance) => void;
 
 /**
+ * Details of a single scheduled warm-up retry, handed to
+ * {@link WarmupRetryConfig.onWarmupRetry} so the app can surface a branded
+ * "warming up…" state WHILE the interceptor retries (UX Move 3). The app owns
+ * the UI; the package only reports that a cold-start retry is in flight.
+ */
+export interface WarmupRetryInfo {
+  /** 1-based attempt number about to be made. */
+  attempt: number;
+  /** Configured max attempts. */
+  maxRetries: number;
+  /** Backoff (ms) before this attempt. */
+  delayMs: number;
+  /** The transient status that triggered the retry (502/503/504). */
+  status: number;
+  /** The request URL being retried, when known. */
+  url?: string;
+}
+
+/**
+ * Warm-up retry tuning for {@link RegisterInterceptorsPorts.warmupRetry} — the
+ * P1-06 cold-start 502/503/504 retry. All fields optional; defaults are
+ * 3 retries, 400ms base (exponential backoff), statuses [502, 503, 504].
+ */
+export interface WarmupRetryConfig {
+  /** Max retry attempts after the first failure. Default 3. */
+  maxRetries?: number;
+  /** Base backoff in ms; attempt N waits `base * 2^(N-1)`. Default 400. */
+  baseDelayMs?: number;
+  /** Statuses treated as transient warm-up failures. Default [502, 503, 504]. */
+  retryableStatuses?: readonly number[];
+  /** Backoff sleeper — injectable for tests. Defaults to `setTimeout`. */
+  sleep?: (ms: number) => Promise<void>;
+  /**
+   * Called each time a transient cold-start failure is about to be retried, so
+   * the app can show a "warming up…" surface while it waits. Fire-and-forget;
+   * the app auto-hides after retries settle (e.g. a short grace timer).
+   */
+  onWarmupRetry?: (info: WarmupRetryInfo) => void;
+}
+
+/**
  * Options for {@link createBffAxiosClient}.
  */
 export interface BffAxiosClientOptions {
@@ -70,4 +111,9 @@ export interface RegisterInterceptorsPorts {
    * not handle 401 session death in the HTTP layer.
    */
   onSessionExpiry?: InterceptorRegistrar;
+  /**
+   * Warm-up retry tuning (P1-06). Transient cold-start `502/503/504`s are
+   * retried with backoff by default; pass overrides here, or `false` to disable.
+   */
+  warmupRetry?: WarmupRetryConfig | false;
 }

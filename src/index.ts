@@ -30,6 +30,12 @@ export {
   registerDefaultCsrfInterceptor,
   attachCsrfHeader,
 } from './interceptors/defaultCsrfInterceptor';
+export {
+  registerWarmupRetryInterceptor,
+  DEFAULT_RETRYABLE_STATUSES,
+  DEFAULT_MAX_RETRIES,
+  DEFAULT_BASE_DELAY_MS,
+} from './interceptors/warmupRetryInterceptor';
 
 // Ports + option types
 export type {
@@ -38,4 +44,6 @@ export type {
   InterceptorRegistrar,
   BffAxiosClientOptions,
   RegisterInterceptorsPorts,
+  WarmupRetryConfig,
+  WarmupRetryInfo,
 } from './types';

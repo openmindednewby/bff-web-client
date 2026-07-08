@@ -30,7 +30,17 @@ describe('registerInterceptors', () => {
 
     // logging registers one request interceptor + default csrf registers one => 2 request interceptors
     expect(requestUse).toHaveBeenCalledTimes(2);
-    // logging response + normalizer + error classifier => 3 response interceptors (no session expiry)
+    // warm-up retry + logging response + normalizer + error classifier => 4 response
+    // interceptors by default (no session expiry). See P1-06.
+    expect(responseUse).toHaveBeenCalledTimes(4);
+  });
+
+  it('omits the warm-up retry interceptor when warmupRetry is false', () => {
+    const { instance, responseUse } = makeInstance();
+
+    registerInterceptors(instance, { logger, emitToast, warmupRetry: false });
+
+    // back to logging response + normalizer + error classifier => 3 response interceptors
     expect(responseUse).toHaveBeenCalledTimes(3);
   });
 
