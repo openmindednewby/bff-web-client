@@ -8,7 +8,8 @@
  * handler. This package never imports a product, realm, or hardcoded URL.
  *
  * Surface:
- *   • `createBffAxiosClient(opts)` — credentialed axios instance, no interceptors
+ *   • `createBffAxiosClient(opts)` — credentialed axios instance + the write-verb
+ *     Content-Type guard (transport correctness, not an app concern)
  *   • `registerInterceptors(instance, ports)` — wires the chain in BFF order
  *   • `registerDefaultCsrfInterceptor` — the default `csrf` port impl
  *   • individual interceptor registrars for selective use
@@ -16,6 +17,10 @@
  */
 
 export { createBffAxiosClient } from './createBffAxiosClient';
+export {
+  applyWriteContentTypeGuard,
+  registerWriteContentTypeGuard,
+} from './writeContentTypeGuard';
 export { registerInterceptors } from './registerInterceptors';
 
 // Individual interceptor registrars (selective use / custom chains)
