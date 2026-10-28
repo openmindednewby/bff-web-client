@@ -69,6 +69,10 @@ Chain order (matches the pre-extraction behaviour):
 - **Response** (execution order): logging → normalizer → session expiry →
   error classifier.
 
+### Tracing
+
+Every request from `createBffAxiosClient` carries a fresh W3C `traceparent`. On failure, `error.traceId` (and `classifyError(error).traceId`) holds the trace id from the response, or the one the request sent; show it as "Error reference". `extractTraceId(error)` reads it from any rejected value.
+
 ### Individual registrars
 
 `registerLoggingInterceptor`, `registerResponseNormalizer`,

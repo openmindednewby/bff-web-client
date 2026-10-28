@@ -2,6 +2,13 @@
 
 All notable changes to `@dloizides/bff-web-client` are documented here.
 
+## [1.4.0] - 2026-10-28
+
+### Added
+- **W3C `traceparent` on every request** (OBS-1 W8b "Every app ships metrics, logs and alerts"): `createBffAxiosClient` registers `registerTraceparentInterceptor`, which sends a fresh `00-<32 hex trace id>-<16 hex span id>-01` per request (Web Crypto `getRandomValues`, xorshift fallback where it is absent). A caller-supplied `traceparent` is kept.
+- **Trace id on errors**: `classifyError` returns `BffClassifiedError` with `traceId`, and `handleResponseError` sets `traceId` on the rejected error so the UI can show "Error reference: <id>". Read order: response `traceparent`, `x-trace-id`, ProblemDetails `traceId`, then the `traceparent` the request sent.
+- Exports `createTraceparent`, `extractTraceId`, `registerTraceparentInterceptor`, types `BffClassifiedError`, `RandomBytesSource`.
+
 ## [1.3.0] - 2026-09-06
 
 ### Added

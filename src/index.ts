@@ -22,6 +22,12 @@ export {
   registerWriteContentTypeGuard,
 } from './writeContentTypeGuard';
 export { registerInterceptors } from './registerInterceptors';
+export {
+  createTraceparent,
+  extractTraceId,
+  registerTraceparentInterceptor,
+} from './tracing/traceContext';
+export type { RandomBytesSource } from './tracing/traceContext';
 
 // Individual interceptor registrars (selective use / custom chains)
 export { registerLoggingInterceptor } from './interceptors/loggingInterceptor';
@@ -45,6 +51,7 @@ export {
 // Ports + option types
 export type {
   BffLogger,
+  BffClassifiedError,
   EmitToast,
   InterceptorRegistrar,
   BffAxiosClientOptions,

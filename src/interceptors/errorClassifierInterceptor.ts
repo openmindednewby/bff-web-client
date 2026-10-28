@@ -10,8 +10,9 @@
 import { HttpMethod } from '@dloizides/api-client-base';
 import { isValueDefined } from '@dloizides/utils';
 
-import type { BffLogger } from '../types';
-import type { ClassifiedError } from '@dloizides/api-client-base';
+import { extractTraceId } from '../tracing/traceContext';
+
+import type { BffClassifiedError, BffLogger } from '../types';
 import type { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
 
 const LOG_CONTEXT = 'errorClassifier';
@@ -97,7 +98,7 @@ function resolveHttpMethod(method: string | undefined): HttpMethod {
 /**
  * Converts an AxiosError into a {@link ClassifiedError} with full context.
  */
-function classifyError(error: AxiosError): ClassifiedError {
+function classifyError(error: AxiosError): BffClassifiedError {
   const response = error.response;
   const hasResponse = isValueDefined(response);
 
@@ -121,6 +122,7 @@ function classifyError(error: AxiosError): ClassifiedError {
     originalError: error,
     timestamp: Date.now(),
     requestId: extractRequestId(response),
+    traceId: extractTraceId(error),
   };
 }
 
@@ -133,11 +135,13 @@ async function handleResponseError(error: unknown, logger: BffLogger): Promise<n
   }
 
   const classified = classifyError(error);
+  Object.assign(error, { traceId: classified.traceId });
 
   logger.warn(LOG_CONTEXT, `HTTP ${classified.method} ${classified.url} failed`, {
     status: classified.status,
     errorCode: classified.errorCode,
     message: classified.message,
+    traceId: classified.traceId,
   });
 
   return Promise.reject(error);

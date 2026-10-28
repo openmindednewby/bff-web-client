@@ -8,6 +8,7 @@
 
 import axios from 'axios';
 
+import { registerTraceparentInterceptor } from './tracing/traceContext';
 import { registerWriteContentTypeGuard } from './writeContentTypeGuard';
 
 import type { BffAxiosClientOptions } from './types';
@@ -38,6 +39,7 @@ function createBffAxiosClient(options: BffAxiosClientOptions): AxiosInstance {
   // defaults above are NOT sufficient on their own: axios strips Content-Type when a
   // request has no body. See writeContentTypeGuard.ts.
   registerWriteContentTypeGuard(instance);
+  registerTraceparentInterceptor(instance);
 
   return instance;
 }

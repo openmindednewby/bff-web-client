@@ -7,7 +7,7 @@
  * handler. The package never imports a product, realm, or hardcoded URL.
  */
 
-import type { ErrorSeverity } from '@dloizides/api-client-base';
+import type { ClassifiedError, ErrorSeverity } from '@dloizides/api-client-base';
 import type { AxiosInstance } from 'axios';
 
 /**
@@ -116,4 +116,9 @@ export interface RegisterInterceptorsPorts {
    * retried with backoff by default; pass overrides here, or `false` to disable.
    */
   warmupRetry?: WarmupRetryConfig | false;
+}
+
+/** A {@link ClassifiedError} plus the trace id the UI shows as "Error reference". */
+export interface BffClassifiedError extends ClassifiedError {
+  traceId?: string;
 }
