@@ -2,6 +2,12 @@
 
 All notable changes to `@dloizides/bff-web-client` are documented here.
 
+## [1.5.0] - 2026-10-28
+
+### Added
+- **Browser error reporter** (OBS-1 A9 / D-OBS-20 "Browser JS errors self-hosted into Loki"): `installClientErrorReporter(options)` listens to window `error` and `unhandledrejection` and exposes `report(error, level?)` for ErrorBoundary / toast paths. It POSTs `{ message <=2000, stack? <=8000, page <=500 (path only), appVersion?, traceId?, level }` to `/bff/client-errors` with `fetch` `keepalive` (unload-safe like `sendBeacon`, which cannot send the `X-BFF-Csrf` header) and `X-BFF-Csrf: 1`. Deduped by level+message+stack, capped at 10 reports per page load, stops after 3 transport failures, guards re-entrancy, never throws. `traceId` comes from the error's `traceId` (set by `handleResponseError`) or `extractTraceId`.
+- Exports `buildClientErrorPayload`, `describeError`, `ClientErrorLevel`, the `DEFAULT_*` constants and the option/payload types.
+
 ## [1.4.0] - 2026-10-28
 
 ### Added

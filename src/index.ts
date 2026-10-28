@@ -29,6 +29,23 @@ export {
 } from './tracing/traceContext';
 export type { RandomBytesSource } from './tracing/traceContext';
 
+export {
+  installClientErrorReporter,
+  DEFAULT_CLIENT_ERRORS_ENDPOINT,
+  DEFAULT_MAX_CLIENT_ERROR_REPORTS,
+  DEFAULT_MAX_TRANSPORT_FAILURES,
+  DEFAULT_CLIENT_ERROR_HEADERS,
+} from './clientErrors/installClientErrorReporter';
+export { buildClientErrorPayload, describeError } from './clientErrors/clientErrorPayload';
+export { ClientErrorLevel } from './clientErrors/clientErrorTypes';
+export type {
+  ClientErrorPayload,
+  ClientErrorFetch,
+  ClientErrorWindow,
+  ClientErrorReporter,
+  ClientErrorReporterOptions,
+} from './clientErrors/clientErrorTypes';
+
 // Individual interceptor registrars (selective use / custom chains)
 export { registerLoggingInterceptor } from './interceptors/loggingInterceptor';
 export { registerResponseNormalizer } from './interceptors/responseNormalizer';
